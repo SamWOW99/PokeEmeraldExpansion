@@ -4029,6 +4029,10 @@ static const struct TrainerMon sParty_Calvin1[] = {
     {
     .lvl = 5,
     .species = SPECIES_POOCHYENA,
+    },
+    {
+    .lvl = 4,
+    .species = SPECIES_SEEDOT,
     }
 };
 
@@ -6586,8 +6590,14 @@ static const struct TrainerMon sParty_MayRoute119Mudkip[] = {
 
 static const struct TrainerMon sParty_MayRoute103Treecko[] = {
     {
-    .lvl = 5,
-    .species = SPECIES_TORCHIC,
+    .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
+    .lvl = 1,
+    .species = SPECIES_WINGULL,
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
+    .lvl = 1,
+    .species = SPECIES_BRELOOM,
     }
 };
 
