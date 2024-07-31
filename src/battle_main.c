@@ -3281,6 +3281,7 @@ static void BattleStartClearSetData(void)
         gStatuses3[i] = 0;
         gStatuses4[i] = 0;
         gDisableStructs[i].isFirstTurn = 2;
+        gDisableStructs[i].slackOffUsed = 0; // Initialize slackOffUsed to 0
         gLastMoves[i] = MOVE_NONE;
         gLastLandedMoves[i] = MOVE_NONE;
         gLastHitByType[i] = 0;
@@ -5382,7 +5383,7 @@ static bool32 TryDoMoveEffectsBeforeMoves(void)
         {
             if (!(gBattleStruct->focusPunchBattlers & gBitTable[battlers[i]])
                 && !(gBattleMons[battlers[i]].status1 & STATUS1_SLEEP)
-                && !(gDisableStructs[battlers[i]].truantCounter)
+                && !(gDisableStructs[battlers[i]].truantCounter && !gDisableStructs[battlers[i]].slackOffUsed) // Adjust Truant counter check
                 && !(gProtectStructs[battlers[i]].noValidMoves))
             {
                 gBattleStruct->focusPunchBattlers |= gBitTable[battlers[i]];
@@ -5405,6 +5406,7 @@ static bool32 TryDoMoveEffectsBeforeMoves(void)
 
     return FALSE;
 }
+
 
 // In gen7, priority and speed are recalculated during the turn in which a pokemon mega evolves
 static void TryChangeTurnOrder(void)
@@ -5469,7 +5471,7 @@ static void CheckChangingTurnOrderEffects(void)
              && gChosenMoveByBattler[battler] != MOVE_FOCUS_PUNCH   // quick claw message doesn't need to activate here
              && (gProtectStructs[battler].usedCustapBerry || gProtectStructs[battler].quickDraw)
              && !(gBattleMons[battler].status1 & STATUS1_SLEEP)
-             && !(gDisableStructs[gBattlerAttacker].truantCounter)
+             && !(gDisableStructs[gBattlerAttacker].truantCounter && !gDisableStructs[gBattlerAttacker].slackOffUsed) // Adjust Truant counter check
              && !(gProtectStructs[battler].noValidMoves))
             {
                 if (gProtectStructs[battler].usedCustapBerry)
@@ -5478,7 +5480,7 @@ static void CheckChangingTurnOrderEffects(void)
                     PREPARE_ITEM_BUFFER(gBattleTextBuff1, gLastUsedItem);
                     if (GetBattlerHoldEffect(battler, FALSE) == HOLD_EFFECT_CUSTAP_BERRY)
                     {
-                        // don't record berry since its gone now
+                        // don't record berry since it's gone now
                         BattleScriptExecute(BattleScript_CustapBerryActivation);
                     }
                     else
