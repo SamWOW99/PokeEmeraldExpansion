@@ -3258,15 +3258,19 @@ u8 AtkCanceller_UnableToUseMove(u32 moveType)
             gBattleStruct->atkCancellerTracker++;
             break;
         case CANCELLER_TRUANT: // truant
-            if (GetBattlerAbility(gBattlerAttacker) == ABILITY_TRUANT && gDisableStructs[gBattlerAttacker].truantCounter)
+            if (GetBattlerAbility(gBattlerAttacker) == ABILITY_TRUANT && gDisableStructs[gBattlerAttacker].truantCounter && gCurrentMove != MOVE_SLACK_OFF)
             {
-                CancelMultiTurnMoves(gBattlerAttacker);
-                gHitMarker |= HITMARKER_UNABLE_TO_USE_MOVE;
-                gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_LOAFING;
-                gBattlerAbility = gBattlerAttacker;
-                gBattlescriptCurrInstr = BattleScript_TruantLoafingAround;
-                gMoveResultFlags |= MOVE_RESULT_MISSED;
-                effect = 1;
+                // If slack off was not used the turn before, loaf around
+                if(!gDisableStructs[gBattlerAttacker].slackOffUsed)
+                {
+                    CancelMultiTurnMoves(gBattlerAttacker);
+                    gHitMarker |= HITMARKER_UNABLE_TO_USE_MOVE;
+                    gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_LOAFING;
+                    gBattlerAbility = gBattlerAttacker;
+                    gBattlescriptCurrInstr = BattleScript_TruantLoafingAround;
+                    gMoveResultFlags |= MOVE_RESULT_MISSED;
+                    effect = 1;
+                }
             }
             gBattleStruct->atkCancellerTracker++;
             break;
@@ -4880,7 +4884,20 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 }
                 break;
             case ABILITY_TRUANT:
-                gDisableStructs[gBattlerAttacker].truantCounter ^= 1;
+                if (gBattleResults.lastUsedMovePlayer == MOVE_SLACK_OFF)
+                {
+                    gDisableStructs[gBattlerAttacker].truantCounter = 0; // Ensure the next turn is not a loafing turn
+                    gDisableStructs[gBattlerAttacker].slackOffUsed = 1; // Indicate that Slack Off was used
+                }
+                else if (gDisableStructs[gBattlerAttacker].slackOffUsed)
+                {
+                    gDisableStructs[gBattlerAttacker].truantCounter = 1; // Reset the counter if Slack Off was used last turn
+                    gDisableStructs[gBattlerAttacker].slackOffUsed = 0; // Reset Slack Off flag
+                }
+                else
+                {
+                    gDisableStructs[gBattlerAttacker].truantCounter ^= 1; // Toggle between 0 and 1
+                }
                 break;
             case ABILITY_BAD_DREAMS:
                 BattleScriptPushCursorAndCallback(BattleScript_BadDreamsActivates);

@@ -103,6 +103,7 @@ struct DisableStruct
     u8 isFirstTurn;
     u8 truantCounter:1;
     u8 truantSwitchInHack:1;
+    u8 slackOffUsed:1; // New flag to indicate if Slack Off was used
     u8 mimickedMoves:4;
     u8 rechargeTimer;
     u8 autotomizeCount;
