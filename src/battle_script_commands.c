@@ -10416,7 +10416,8 @@ static void Cmd_various(void)
     case VARIOUS_TRY_ACTIVATE_BATTLE_BOND:
     {
         VARIOUS_ARGS();
-        if (gBattleMons[gBattlerAttacker].species == SPECIES_GRENINJA_BATTLE_BOND
+        if ((gBattleMons[gBattlerAttacker].species == SPECIES_GRENINJA_BATTLE_BOND 
+            || (gBattleMons[gBattlerAttacker].species == SPECIES_GRENINJA && GetBattlerAbility(gBattlerAttacker) == ABILITY_BATTLE_BOND))
             && HasAttackerFaintedTarget()
             && CalculateBattlerPartyCount(gBattlerTarget) > 1
             && !(gBattleStruct->battleBondTransformed[GetBattlerSide(gBattlerAttacker)] & gBitTable[gBattlerPartyIndexes[gBattlerAttacker]]))
