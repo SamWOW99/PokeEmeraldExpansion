@@ -1499,7 +1499,7 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
     #else
         .name = _("WtrCmpaction"),
     #endif
-        .description = COMPOUND_STRING("Water boosts Defense."),
+        .description = COMPOUND_STRING("Take half damage from Water and boosts Defense."),
         .aiRating = 4,
     },
 
