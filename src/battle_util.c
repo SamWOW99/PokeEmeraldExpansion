@@ -9716,6 +9716,10 @@ static inline uq4_12_t GetDefenderAbilitiesModifier(u32 move, u32 moveType, u32 
         if (IsMoveMakingContact(move, battlerAtk) && moveType != TYPE_FIRE)
             return UQ_4_12(0.5);
         break;
+    case ABILITY_WATER_COMPACTION:
+        if (moveType == TYPE_WATER)
+            return UQ_4_12(0.5);
+        break;
     case ABILITY_PUNK_ROCK:
         if (gMovesInfo[move].soundMove)
             return UQ_4_12(0.5);
