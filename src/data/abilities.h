@@ -299,6 +299,13 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
         .aiRating = 10,
     },
 
+    [ABILITY_FELINE_PROWESS] =
+    {
+        .name = _("Feline Prowess"),
+        .description = COMPOUND_STRING("Doubles Special Attack."),
+        .aiRating = 10,
+    },
+
     [ABILITY_POISON_POINT] =
     {
         .name = _("Poison Point"),
@@ -1492,7 +1499,7 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
     #else
         .name = _("WtrCmpaction"),
     #endif
-        .description = COMPOUND_STRING("Water boosts Defense."),
+        .description = COMPOUND_STRING("Take half damage from Water and boosts Defense."),
         .aiRating = 4,
     },
 

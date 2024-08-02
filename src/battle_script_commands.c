@@ -7218,10 +7218,15 @@ static void Cmd_switchineffects(void)
         u32 battlerAbility = GetBattlerAbility(battler);
         // There is a hack here to ensure the truant counter will be 0 when the battler's next turn starts.
         // The truant counter is not updated in the case where a mon switches in after a lost judgment in the battle arena.
+        // Ensure the truant counter will be 0 when the battler's next turn starts,
+        // and that the counter is not updated in the case where a mon switches in after a lost judgment in the battle arena.
         if (battlerAbility == ABILITY_TRUANT
             && gCurrentActionFuncId != B_ACTION_USE_MOVE
-            && !gDisableStructs[battler].truantSwitchInHack)
+            && !gDisableStructs[battler].truantSwitchInHack
+            && !gDisableStructs[battler].slackOffUsed) // Add condition to check if Slack Off was used
+        { 
             gDisableStructs[battler].truantCounter = 1;
+        }
 
         gDisableStructs[battler].truantSwitchInHack = 0;
 
@@ -9199,7 +9204,14 @@ static void Cmd_various(void)
         gBattleMons[1].hp = 0;
         gHitMarker |= HITMARKER_FAINTED(1);
         gBattleStruct->arenaLostOpponentMons |= gBitTable[gBattlerPartyIndexes[1]];
-        gDisableStructs[1].truantSwitchInHack = 1;
+        if (gDisableStructs[1].slackOffUsed) // Check if Slack Off was used
+        {
+            gDisableStructs[1].truantSwitchInHack = 0; // Do not apply Truant switch-in hack
+        }
+        else
+        {
+            gDisableStructs[1].truantSwitchInHack = 1;
+        }
         break;
     }
     case VARIOUS_ARENA_PLAYER_MON_LOST:
@@ -9209,7 +9221,14 @@ static void Cmd_various(void)
         gHitMarker |= HITMARKER_FAINTED(0);
         gHitMarker |= HITMARKER_PLAYER_FAINTED;
         gBattleStruct->arenaLostPlayerMons |= gBitTable[gBattlerPartyIndexes[0]];
-        gDisableStructs[0].truantSwitchInHack = 1;
+        if (gDisableStructs[0].slackOffUsed) // Check if Slack Off was used
+        {
+            gDisableStructs[0].truantSwitchInHack = 0; // Do not apply Truant switch-in hack
+        }
+        else
+        {
+            gDisableStructs[0].truantSwitchInHack = 1;
+        }
         break;
     }
     case VARIOUS_ARENA_BOTH_MONS_LOST:
@@ -9222,8 +9241,22 @@ static void Cmd_various(void)
         gHitMarker |= HITMARKER_PLAYER_FAINTED;
         gBattleStruct->arenaLostPlayerMons |= gBitTable[gBattlerPartyIndexes[0]];
         gBattleStruct->arenaLostOpponentMons |= gBitTable[gBattlerPartyIndexes[1]];
-        gDisableStructs[0].truantSwitchInHack = 1;
-        gDisableStructs[1].truantSwitchInHack = 1;
+        if (gDisableStructs[0].slackOffUsed)
+        {
+            gDisableStructs[0].truantSwitchInHack = 0; // Do not apply Truant switch-in hack
+        }
+        else
+        {
+            gDisableStructs[0].truantSwitchInHack = 1;
+        }
+        if (gDisableStructs[1].slackOffUsed)
+        {
+            gDisableStructs[1].truantSwitchInHack = 0; // Do not apply Truant switch-in hack
+        }
+        else
+        {
+            gDisableStructs[1].truantSwitchInHack = 1;
+        }
         break;
     }
     case VARIOUS_EMIT_YESNOBOX:
@@ -10383,7 +10416,8 @@ static void Cmd_various(void)
     case VARIOUS_TRY_ACTIVATE_BATTLE_BOND:
     {
         VARIOUS_ARGS();
-        if (gBattleMons[gBattlerAttacker].species == SPECIES_GRENINJA_BATTLE_BOND
+        if ((gBattleMons[gBattlerAttacker].species == SPECIES_GRENINJA_BATTLE_BOND 
+            || (gBattleMons[gBattlerAttacker].species == SPECIES_GRENINJA && GetBattlerAbility(gBattlerAttacker) == ABILITY_BATTLE_BOND))
             && HasAttackerFaintedTarget()
             && CalculateBattlerPartyCount(gBattlerTarget) > 1
             && !(gBattleStruct->battleBondTransformed[GetBattlerSide(gBattlerAttacker)] & gBitTable[gBattlerPartyIndexes[gBattlerAttacker]]))
