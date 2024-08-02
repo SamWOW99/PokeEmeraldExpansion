@@ -618,10 +618,10 @@ static void LoadLinkPartnerObjectEventSpritePalette(u8 graphicsId, u8 localEvent
 
 static const struct UCoords8 sMauvilleGymSwitchCoords[] =
 {
-    { 0 + MAP_OFFSET, 15 + MAP_OFFSET},
-    { 4 + MAP_OFFSET, 12 + MAP_OFFSET},
+    { 1 + MAP_OFFSET, 13 + MAP_OFFSET},
     { 3 + MAP_OFFSET,  9 + MAP_OFFSET},
-    { 8 + MAP_OFFSET,  9 + MAP_OFFSET}
+    { 8 + MAP_OFFSET,  9 + MAP_OFFSET},
+    { 5 + MAP_OFFSET,  4 + MAP_OFFSET}
 };
 
 // Presses the stepped-on switch and raises the rest
